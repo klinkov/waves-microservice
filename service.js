@@ -3,6 +3,7 @@
  */
 const password = 'over4^Built^';
 const slotsWallet = '3MzEwkDtwrdgyh3zBiBwnk98kaeqaF7uCGP';
+const slotsWalletEncryptedPhrase = '.....';
 const PORT = 3018;
 
 const Koa = require('koa');
@@ -121,26 +122,44 @@ router.get('/bet', async (ctx, next) => {
     return next();
 });
 
+router.get('/reward', async (ctx, next) => {
+    try {
+        const targetWallet= ctx.request.query.targetWallet;
+        const restoredPhrase = Waves.Seed.decryptSeedPhrase(ctx.request.query.targetWallet, password);
+        const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
+
+        // NodeJS Rest API unusable at this moment
+        /*
+        const transferData = {
+            recipient: targetWallet,
+            amount: ctx.request.query.amount,
+            assetId: 'WAVES',
+            attachment: ctx.request.query.attachment,
+        };
+
+        responseData = await Waves.API.Node.transactions.broadcast('transfer', transferData, seed.keyPair);
+        */
+
+        // Use Python for communicate with Waves Rest API
+        let responseData = await runPy([
+            seed.keyPair.privateKey,
+            targetWallet,
+            ctx.request.query.amount,
+            ctx.request.query.attachment,
+        ]);
+
+        let bet = responseData.toString();
+        console.log(`reward`, bet);
+        ctx.body = bet;
+    } catch (e) {
+        console.error(`reward`, e);
+        ctx.body = JSON.stringify({error: true});
+    }
+    return next();
+});
+
 app.use(router.routes());
 app.listen(PORT);
 
 console.log(`http://localhost:3018`);
-/*
 
-const spinResult = {
-    posInSequence: [39, 6, 26, 61, 58],
-    value:
-        [
-            [8, 11, 1],
-            [12, 1, 9],
-            [6, 9, 3],
-            [4, 10, 6],
-            [12, 1, 8]
-        ]
-};
-
-console.log(JSON.stringify(spinResult));
-console.log(sha256(JSON.stringify(spinResult)) + '/' + '11567390b7a7d88aad8df3fb1b6c04634c2a0dc6b6b680ab19c842ada7b9fccd');
-
-const tx_descr = bs58.decode('oFDtB7jNGuiUYzMXiZqd5Hzx8gvY5ULqqE8kj7iGiX8Ap2F1EmMA3AXB4RyBLcsenm9Mi13uwQRvBSfVsaee27WjPFPCEh8kYtYdDPEdg5p8CtHiRorYr6A9EAPNYvpPFkmr8X1DrdCtPYus7qFUYwqvBm7R7dvdrKa8nXRtf4A2pSh9');
-console.log(tx_descr.toString());*/
