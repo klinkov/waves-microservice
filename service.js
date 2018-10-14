@@ -11,9 +11,6 @@ const Router = require('koa-router');
 const app = new Koa();
 const path = require('path');
 
-const bs58 = require('bs58');
-const sha256 = require('js-sha256');
-
 const WavesAPI = require('@waves/waves-api');
 const Waves = WavesAPI.create(WavesAPI.TESTNET_CONFIG);
 
@@ -162,4 +159,3 @@ app.use(router.routes());
 app.listen(PORT);
 
 console.log(`http://localhost:3018`);
-
