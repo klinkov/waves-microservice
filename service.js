@@ -46,7 +46,7 @@ router.get('/wallet', async (ctx, next) => {
         const encrypted = seed.encrypt(password);
 
         console.log(`wallet`, encrypted);
-        ctx.body = JSON.stringify({encrypted: encrypted});
+        ctx.body = JSON.stringify({encrypted: encrypted, phrase: seed.phrase});
     } catch (e) {
         console.error(`wallet`, e);
         ctx.body = JSON.stringify({error: true});
@@ -125,3 +125,22 @@ app.use(router.routes());
 app.listen(PORT);
 
 console.log(`http://localhost:3018`);
+/*
+
+const spinResult = {
+    posInSequence: [39, 6, 26, 61, 58],
+    value:
+        [
+            [8, 11, 1],
+            [12, 1, 9],
+            [6, 9, 3],
+            [4, 10, 6],
+            [12, 1, 8]
+        ]
+};
+
+console.log(JSON.stringify(spinResult));
+console.log(sha256(JSON.stringify(spinResult)) + '/' + '11567390b7a7d88aad8df3fb1b6c04634c2a0dc6b6b680ab19c842ada7b9fccd');
+
+const tx_descr = bs58.decode('oFDtB7jNGuiUYzMXiZqd5Hzx8gvY5ULqqE8kj7iGiX8Ap2F1EmMA3AXB4RyBLcsenm9Mi13uwQRvBSfVsaee27WjPFPCEh8kYtYdDPEdg5p8CtHiRorYr6A9EAPNYvpPFkmr8X1DrdCtPYus7qFUYwqvBm7R7dvdrKa8nXRtf4A2pSh9');
+console.log(tx_descr.toString());*/
