@@ -1,0 +1,14 @@
+{
+  "name": "stat",
+  "version": "1.0.0",
+  "description": "stat service",
+  "main": "service.js",
+  "scripts": {
+  },
+  "author": "shade",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "1.8.3"
+  },
+  "devDependencies": {}
+}
